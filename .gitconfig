@@ -1,0 +1,23 @@
+[color]
+    branch = auto
+    diff = auto
+    interactive = auto
+    status = auto
+[user]
+    name = Stuart Quin
+    email = stuart.quin@gmail.com
+[github]
+    user = stuartquin
+[alias]
+    pick = !sh -c 'git log -S$1 -p' -
+    stat = status -s
+    lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+    todo = !git grep --color=always --no-index --exclude-standard --heading --break --ignore-case -e ' FIX: *' -e ' TODO: *' | sed -e 's/^[[:space:]]*//'
+    rum = pull --rebase upstream master
+    pf = push -f
+[web]
+	browser = google-chrome
+[push]
+	default = simple
+[status]
+	displaycommentprefix = true
