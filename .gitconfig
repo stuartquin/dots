@@ -14,6 +14,7 @@
     lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
     todo = !git grep --color=always --no-index --exclude-standard --heading --break --ignore-case -e ' FIX: *' -e ' TODO: *' | sed -e 's/^[[:space:]]*//'
     rum = pull --rebase upstream master
+    ri = rebase -i HEAD~2
     pf = push -f
 [web]
 	browser = google-chrome
@@ -21,3 +22,5 @@
 	default = simple
 [status]
 	displaycommentprefix = true
+[credential]
+	helper = store
