@@ -1,5 +1,5 @@
 " open NERDTree if no files
-autocmd vimenter * if !argc() | NERDTree | endif
+autocmd vimenter * if !argc() | Explore | endif
 
 set tabstop=4
 set shiftwidth=4
@@ -40,6 +40,7 @@ set cursorcolumn
 syn on
 
 " Key Mappings
+map <F2> :Vexplore<CR>
 map <C-J> <C-W>j<C-W>_
 map <C-K> <C-W>k<C-W>_
 map <C-l> :tabnext<CR>
@@ -47,16 +48,17 @@ map <C-h> :tabprev<CR>
 map <C-t> :tabnew<CR>
 map <C-Tab> :bnext<cr>
 map <C-d> :VimwikiToggleListItem<cr>
-map <C-Backspace> :bprevious<cr>
-map <C-Return> :YcmCompleter GoTo<cr>
+map <F9> :VimwikiTabMakeDiaryNote<cr>
+map <C-S-Tab> :bprevious<cr>
 
-map <F2> :NERDTreeToggle<CR>
+" vim fugitive stuff
 map <F3> :Gstatus<CR>
 map <F4> :Gcommit<CR>
 map <F6> :Gdiff<CR>
-map <F7> :YcmCompleter GetDoc<cr>
 map <F8> :Goyo<CR>
-map <F9> :VimwikiTabMakeDiaryNote<cr>
+
+map <C-Return> :YcmCompleter GoTo<CR>
+map <C-Backspace> :b#<CR>
 
 set nocompatible              " be iMproved, required
 filetype off                  " required
@@ -72,7 +74,6 @@ Plugin 'ap/vim-css-color'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'guns/vim-clojure-static'
-Plugin 'hynek/vim-python-pep8-indent'
 Plugin 'joonty/vdebug.git'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
@@ -85,7 +86,6 @@ Plugin 'mileszs/ack.vim'
 Plugin 'mustache/vim-mustache-handlebars'
 Plugin 'pangloss/vim-javascript'
 Plugin 'rking/ag.vim'
-Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/syntastic'
 Plugin 'terryma/vim-multiple-cursors'
@@ -95,12 +95,11 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'tpope/vim-surround'
 Plugin 'tpope/vim-markdown'
 Plugin 'tpope/vim-projectionist'
+Plugin 'tpope/vim-vinegar'
 Plugin 'tommcdo/vim-exchange'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
-
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -122,11 +121,19 @@ let g:NERDTreeDirArrows=1
 " Colourscheme
 colorscheme lucius
 LuciusLightHighContrast
+
+" Color customisations
 highlight CursorColumn guibg=#DEDEDE
 highlight ColorColumn ctermfg=1 ctermbg=7 cterm=NONE guifg=#FF2222 guibg=#FFDFDF gui=bold
 
 set list
 set listchars=tab:>.,trail:.,extends:#,nbsp:.
+highlight ExtraWhitespace ctermbg=red guibg=#d75f00
+match ExtraWhitespace /\s\+$/
+autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+autocmd BufWinLeave * call clearmatches()
 
 " Pink Comments
 " hi Comment guifg=#F06EFF gui=bold
@@ -135,13 +142,6 @@ set listchars=tab:>.,trail:.,extends:#,nbsp:.
 if has("gui_running")
     highlight SpellBad term=underline gui=undercurl guisp=Orange
 endif
-
-highlight ExtraWhitespace ctermbg=red guibg=red
-match ExtraWhitespace /\s\+$/
-autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
-autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
-autocmd InsertLeave * match ExtraWhitespace /\s\+$/
-autocmd BufWinLeave * call clearmatches()
 
 " Fancy coloured parenthese
 au VimEnter * RainbowParenthesesToggleAll
@@ -152,7 +152,7 @@ au Syntax * RainbowParenthesesLoadBraces
 au FileType ruby setl sw=2 sts=2 ts=2 et
 au FileType javascript setl sw=4 sts=4 ts=4 et
 au FileType php setl sw=2 sts=2 ts=2 et
-au FileType html setl sw=4 sts=4 ts=4 et
+au FileType html setl sw=2 sts=2 ts=2 et
 
 au BufNewFile,BufRead *.cs set filetype=coffee
 au BufRead,BufNewFile *.markdown set filetype=mkd
@@ -167,12 +167,6 @@ let mapleader=","
 " ZenMode
 nnoremap <silent> <leader>z :Goyo<cr>
 
-" replace currently selected text with default register
-" without yanking it
-vnoremap <leader>p "_dP
-
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-
 " Prevent Jedi doc string
 autocmd FileType python setlocal completeopt-=preview
 
@@ -184,10 +178,25 @@ vmap <Enter> :Eval<CR>
 if !exists('g:airline_symbols')
   let g:airline_symbols = {}
 endif
+let g:airline_section_y = 0
 let g:airline_left_sep = '▶'
 let g:airline_right_sep = '◀'
 let g:airline_symbols.branch = '⎇'
-let g:airline_theme='solarized'
+let g:airline_theme='dark'
+let g:airline_detect_paste=0
+let g:airline_mode_map = {
+    \ '__' : '-',
+    \ 'n'  : 'N',
+    \ 'i'  : 'I',
+    \ 'R'  : 'R',
+    \ 'c'  : 'C',
+    \ 'v'  : 'V',
+    \ 'V'  : 'V',
+    \ '' : 'V',
+    \ 's'  : 'S',
+    \ 'S'  : 'S',
+    \ '' : 'S',
+    \ }
 
 " Vim gist stuff
 let g:gist_clip_command = 'xclip -selection clipboard'
@@ -197,7 +206,13 @@ let g:gist_open_browser_after_post = 1
 
 " Syntastic checkers
 let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_checkers = ['jshint', 'eslint']
+
+" YCM
+let g:ycm_goto_buffer_command = 'new-tab'
+
+" Vim Handlebars
+let g:mustache_abbreviations = 1
 
 " Use Ag if available
 if executable('ag')
