@@ -66,14 +66,14 @@ filetype off                  " required
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-Plugin 'gmarik/Vundle.vim'
-
+Plugin 'gmarik/Vundle.vim' 
 Plugin 'amix/vim-zenroom2'
 Plugin 'airblade/vim-gitgutter'
 Plugin 'ap/vim-css-color'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'ekalinin/Dockerfile.vim'
 Plugin 'guns/vim-clojure-static'
+Plugin 'honza/vim-snippets'
 Plugin 'joonty/vdebug.git'
 Plugin 'junegunn/goyo.vim'
 Plugin 'junegunn/limelight.vim'
@@ -88,6 +88,7 @@ Plugin 'pangloss/vim-javascript'
 Plugin 'rking/ag.vim'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/syntastic'
+Plugin 'SirVer/ultisnips'
 Plugin 'terryma/vim-multiple-cursors'
 Plugin 'tpope/vim-classpath'
 Plugin 'tpope/vim-fireplace'
@@ -100,6 +101,7 @@ Plugin 'tommcdo/vim-exchange'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'digitaltoad/vim-pug'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -150,7 +152,7 @@ au Syntax * RainbowParenthesesLoadBraces
 
 " Custom tabstops
 au FileType ruby setl sw=2 sts=2 ts=2 et
-au FileType javascript setl sw=4 sts=4 ts=4 et
+au FileType javascript setl sw=2 sts=2 ts=2 et
 au FileType php setl sw=2 sts=2 ts=2 et
 au FileType html setl sw=2 sts=2 ts=2 et
 
@@ -206,7 +208,7 @@ let g:gist_open_browser_after_post = 1
 
 " Syntastic checkers
 let g:syntastic_python_checkers = ['flake8']
-let g:syntastic_javascript_checkers = ['jshint', 'eslint']
+let g:syntastic_javascript_checkers = ['eslint']
 
 " YCM
 let g:ycm_goto_buffer_command = 'new-tab'
@@ -225,9 +227,15 @@ endif
 " Set font
 set guifont=Inconsolata\ 9
 
-"" Limelight Goyo integration
+" Limelight Goyo integration
 autocmd! User GoyoEnter Limelight
 autocmd! User GoyoLeave Limelight!
+
+" UltiSnips
+let g:UltiSnipsExpandTrigger="<c-f>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsEditSplit="vertical"
 
 " Projectionist config
 let g:projectionist_heuristics = {
