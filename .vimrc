@@ -6,8 +6,8 @@ filetype plugin indent on    " required
 
 let g:python3_host_prog = '/usr/bin/python3'
 
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 set runtimepath+=$HOME/.vim/plugin
 " set paste
@@ -68,7 +68,6 @@ map <C-S-Tab> :bprevious<cr>
 map <F3> :Gstatus<CR>
 map <F4> :Gcommit<CR>
 map <F6> :Gdiff<CR>
-map <F8> :Goyo<CR>
 
 map <Leader><Space> :YcmCompleter GoToDefinition<CR>
 noremap <Leader>b :b#<CR>
@@ -81,8 +80,13 @@ nnoremap <Leader>ct :let @+=expand("%:t")<CR>
 " directory name (/something/src)
 nnoremap <Leader>ch :let @+=expand("%:p:h")<CR>
 noremap <Leader>l :Log<CR>
+inoremap <F8> :Log<CR>
 noremap <Leader>q :cclose<CR>
 noremap <Leader>j :%!python -m json.tool<CR>
+
+" Insert current date
+" :inoremap <F7> <C-R>=strftime("%a %d %b %Y")<CR>
+:inoremap <F7> <C-R>=strftime("# %a %Y-%m-%d")<CR>
 
 
 set nocompatible              " be iMproved, required
@@ -104,12 +108,9 @@ Plug 'majutsushi/tagbar'
 Plug 'mattn/gist-vim'
 Plug 'mileszs/ack.vim'
 Plug 'mklabs/split-term.vim'
-Plug 'mustache/vim-mustache-handlebars'
-Plug 'mxw/vim-jsx'
-Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdcommenter'
 Plug 'SirVer/ultisnips'
-Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
+" Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 Plug 'tpope/vim-classpath'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
@@ -119,12 +120,9 @@ Plug 'tommcdo/vim-exchange'
 Plug 'Valloric/YouCompleteMe'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'digitaltoad/vim-pug'
 Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
-Plug 'plasticboy/vim-markdown'
 Plug 'gavocanov/vim-js-indent'
-Plug 'leafgarland/typescript-vim'
 Plug 'w0rp/ale'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -141,6 +139,14 @@ Plug 'morhetz/gruvbox'
 Plug 'othree/yajs.vim'
 Plug 'ap/vim-css-color'
 Plug 'rust-lang/rust.vim'
+Plug 'posva/vim-vue'
+Plug 'elixir-editors/vim-elixir'
+Plug 'leafgarland/typescript-vim'
+Plug 'digitaltoad/vim-pug'
+Plug 'plasticboy/vim-markdown'
+Plug 'mustache/vim-mustache-handlebars'
+Plug 'mxw/vim-jsx'
+Plug 'pangloss/vim-javascript'
 
 
 " All of your Plugs must be added before the following line
@@ -210,15 +216,10 @@ au FileType pug setl sw=2 sts=2 ts=2 et
 au FileType css setl sw=2 sts=2 ts=2 et
 au FileType scss setl sw=2 sts=2 ts=2 et
 au FileType less setl sw=2 sts=2 ts=2 et
+au FileType markdown,vimwiki setl sw=2 sts=2 ts=2 et
 
-au BufNewFile,BufRead *.cs set filetype=coffee
 au BufRead,BufNewFile *.markdown set filetype=markdown
 au BufRead,BufNewFile *.md       set filetype=markdown
-
-" Insert current date
-" :inoremap <F7> <C-R>=strftime("%a %d %b %Y")<CR>
-:inoremap <F7> <C-R>=strftime("%a %Y-%m-%d")<CR>
-:inoremap <F8> <C-R>=strftime("%Y-%m-%d")<CR>
 
 " Jump to sudo
 cmap w!! w !sudo tee % >/dev/null
@@ -267,10 +268,6 @@ let g:mustache_abbreviations = 1
 
 " Set font
 set guifont=Inconsolata\ 12
-
-" Limelight Goyo integration
-autocmd! User GoyoEnter Limelight
-autocmd! User GoyoLeave Limelight!
 
 " UltiSnips
 let g:UltiSnipsExpandTrigger="<C-f>"
@@ -390,7 +387,7 @@ vnoremap <Leader>g :RG<CR>
 "
 function! RunLog ()
     execute '80vsplit'
-    call vimwiki#diary#goto_prev_day()
+    call vimwiki#diary#goto_diary_index(0)
 endfunction
 
 command! -range Log :call RunLog()
@@ -411,14 +408,17 @@ let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
 
 let g:ale_fixers = {
+  \ '*': ['remove_trailing_lines', 'trim_whitespace'],
   \ 'javascript': ['prettier_eslint', 'prettier'],
-  \ 'jsx': ['prettier_eslint'],
-  \ 'tsx': ['prettier'],
-  \ 'typescript.tsx': ['prettier'],
+  \ 'vue': ['prettier'],
+  \ 'jsx': ['prettier_eslint', 'prettier'],
   \ 'python': ['black'],
+  \ 'elixir': ['mix_format'],
   \ }
+
 let g:ale_linters = {
   \ 'python': ['mypy', 'flake8'],
+  \ 'elixir': ['credo'],
   \ }
 
 let g:ale_lint_delay = 1000
