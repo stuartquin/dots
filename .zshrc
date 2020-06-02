@@ -31,9 +31,13 @@ DISABLE_AUTO_TITLE="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 
-plugins=(git pass)
+plugins=(git pass docker docker-compose z zsh-autosuggestions)
+DISABLE_AUTO_UPDATE="true"
 source $ZSH/oh-my-zsh.sh
 unsetopt correct_all
+
+# Custom autocompletes
+fpath=(~/..zsh-plugins $fpath)
 
 ZSH_THEME_GIT_PROMPT_PREFIX=""
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
@@ -59,17 +63,16 @@ alias egrep='egrep --color=auto'
 alias rgrep='rgrep --color=auto'
 alias ack='ack-grep'
 
-alias todo="vim -O ~/Dropbox/epistle/todo.txt ~/Dropbox/epistle/ideas.txt"
-alias studo="python /home/stuart/Projects/studo/studo.py"
-
 alias webshare='python -c "import SimpleHTTPServer;SimpleHTTPServer.test()"'
-alias ll=' LC_ALL=en_US.UTF-8 LANG=en ls++ '
-alias ag='ag --color-line-number=36 --color-path=46 --color-match=42'
+alias ll='l'
+alias ag="ag --color-line-number=32 --color-path=35 --color-match='42'"
 alias ccat='pygmentize -g'
 
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
+
 # Light coloured vim
-alias gviml="gvim -c LuciusLightHighContrast"
-alias gvimw="gvim -c LuciusWhiteHighContrast"
+export VTE_VERSION="100"
+alias lvim='LIGHT=1 nvim'
 
 # Change dir alias
 alias pi='cd ~/Projects/pi/'
@@ -80,9 +83,9 @@ function csc() {
 }
 
 # VirtualEnv Wrapper stuff
-export WORKON_HOME=$HOME/.virtualenvs
-export PROJECT_HOME=$HOME/Devel
-source /usr/local/bin/virtualenvwrapper.sh
+# export WORKON_HOME=$HOME/.virtualenvs
+# export PROJECT_HOME=$HOME/Devel
+# source /usr/local/bin/virtualenvwrapper.sh
 
 case $TERM in
     *xterm*)
@@ -141,8 +144,7 @@ export PATH=${PATH}:~/.composer/vendor/bin
 export PATH=$PATH:/usr/local/go/bin
 export PATH=$PATH:$HOME/bin
 
-function gopath() 
-{
+function gopath() {
     mkdir -p bin pkg
     mkdir -p src/github.com/stuart.quin
     export GOPATH=`pwd`
@@ -150,3 +152,30 @@ function gopath()
 }
 
 export IBUS_ENABLE_SYNC_MODE=1
+
+function venv () {
+    source /usr/local/bin/virtualenvwrapper.sh
+    workon $1
+}
+
+
+
+#TW OVERRIDES
+if [ -f ~/.treatwellrc ]; then
+	. ~/.treatwellrc
+fi
+
+export PATH=$PATH:~/.config/yarn/global/node_modules/.bin
+export PATH=$PATH:~/.cargo/bin
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /home/stuart/Projects/veremark/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/stuart/Projects/veremark/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /home/stuart/Projects/veremark/node_modules/tabtab/.completions/sls.zsh ]] && . /home/stuart/Projects/veremark/node_modules/tabtab/.completions/sls.zsh
+# tabtab source for slss package
+# uninstall by removing these lines or running `tabtab uninstall slss`
+[[ -f /home/stuart/Projects/veremark/node_modules/tabtab/.completions/slss.zsh ]] && . /home/stuart/Projects/veremark/node_modules/tabtab/.completions/slss.zsh
