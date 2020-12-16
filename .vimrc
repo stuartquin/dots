@@ -82,7 +82,7 @@ nnoremap <Leader>ch :let @+=expand("%:p:h")<CR>
 noremap <Leader>l :Log<CR>
 inoremap <F8> :Log<CR>
 noremap <Leader>q :cclose<CR>
-noremap <Leader>j :%!python -m json.tool<CR>
+noremap <Leader>j :%!python3 -m json.tool<CR>
 
 " Insert current date
 " :inoremap <F7> <C-R>=strftime("%a %d %b %Y")<CR>
@@ -116,14 +116,19 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-projectionist'
 Plug 'tpope/vim-vinegar'
+Plug 'tommcdo/vim-fubitive'
 Plug 'tommcdo/vim-exchange'
-Plug 'Valloric/YouCompleteMe'
+Plug 'shumphrey/fugitive-gitlab.vim'
+" Plug 'Valloric/YouCompleteMe'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'vimwiki/vimwiki'
 Plug 'godlygeek/tabular'
 Plug 'gavocanov/vim-js-indent'
 Plug 'w0rp/ale'
+
+Plug 'LucHermitte/lh-vim-lib'
+Plug 'LucHermitte/local_vimrc'
 
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
@@ -147,6 +152,8 @@ Plug 'plasticboy/vim-markdown'
 Plug 'mustache/vim-mustache-handlebars'
 Plug 'mxw/vim-jsx'
 Plug 'pangloss/vim-javascript'
+Plug 'reedes/vim-colors-pencil'
+Plug 'junegunn/gv.vim'
 
 
 " All of your Plugs must be added before the following line
@@ -155,20 +162,31 @@ call plug#end()            " required
 autocmd FileType git commit DiffGitCached | wincmd p
 
 " Colourscheme
-colorscheme lucius
 
 if empty($LIGHT)
-    LuciusDarkHighContrast
-    highlight ColorColumn ctermfg=1 ctermbg=235
-    highlight TabLineSel ctermfg=2 ctermbg=235
-    highlight StatusLine ctermfg=2 ctermbg=235
+  colorscheme lucius
+  LuciusDarkHighContrast
+  let g:gitgutter_override_sign_column_highlight = 0
+  let g:gitgutter_sign_removed = '-'
+  highlight ColorColumn ctermfg=1 ctermbg=235
+  highlight TabLineSel ctermfg=2 ctermbg=235
+  highlight StatusLine ctermfg=2 ctermbg=235
+  highlight GitGutterAdd guibg=#DDFBE6 ctermfg=41 cterm=bold
+  highlight GitGutterChange guibg=#FCD876 ctermfg=58 cterm=bold
+  highlight GitGutterChangeDelete guibg=#FCD876 ctermfg=52 cterm=bold
+  highlight GitGutterDelete guibg=#FAC5CD ctermfg=52 cterm=bold
 else
-    LuciusWhiteHighContrast
-    highlight ColorColumn ctermfg=1 ctermbg=224 cterm=NONE guifg=#FF2222 guibg=#FFDFDF gui=bold
-    highlight StatusLine ctermbg=1
-    let g:rainbow_conf = {
-    \  'ctermfgs': ['darkblue', 'darkyellow', 'darkcyan', 'darkmagenta']
-    \}
+  colorscheme lucius
+  LuciusWhiteHighContrast
+  highlight ColorColumn ctermfg=1 ctermbg=224 cterm=NONE guifg=#FF2222 guibg=#FFDFDF gui=bold
+  highlight StatusLine ctermbg=1
+  let g:rainbow_conf = {
+  \  'ctermfgs': ['darkblue', 'darkyellow', 'darkcyan', 'darkmagenta']
+  \}
+  highlight GitGutterAdd guibg=#DDFBE6 ctermfg=28 cterm=bold
+  highlight GitGutterChange guibg=#FCD876 ctermfg=172 cterm=bold
+  highlight GitGutterChangeDelete guibg=#FCD876 ctermfg=172 cterm=bold
+  highlight GitGutterDelete guibg=#FAC5CD ctermfg=196 cterm=bold
 endif
 
 " let g:gruvbox_italic=1
@@ -178,12 +196,6 @@ endif
 " Color customisations
 highlight WildMenu ctermbg=172
 
-let g:gitgutter_override_sign_column_highlight = 0
-highlight GitGutterAdd guibg=#DDFBE6 ctermfg=28 cterm=bold
-highlight GitGutterChange guibg=#FCD876 ctermfg=172 cterm=bold
-highlight GitGutterChangeDelete guibg=#FCD876 ctermfg=172 cterm=bold
-highlight GitGutterDelete guibg=#FAC5CD ctermfg=196 cterm=bold
-let g:gitgutter_sign_removed = '-'
 
 set list
 set listchars=tab:>.,trail:.,extends:#,nbsp:.
@@ -250,6 +262,7 @@ let g:airline_mode_map = {
     \ 'S'  : 'S',
     \ '' : 'S',
     \ }
+
 
 " Vim gist stuff
 let g:gist_clip_command = 'xclip -selection clipboard'
@@ -407,14 +420,17 @@ endif
 let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
 
+let g:ale_python_black_executable = '/home/stuart/venvs/black/bin/black'
+let g:ale_elixir_mix_executable = 'docker exec -t minipd_web_1 mix'
+
 let g:ale_fixers = {
   \ '*': ['remove_trailing_lines', 'trim_whitespace'],
   \ 'javascript': ['prettier_eslint', 'prettier'],
   \ 'vue': ['prettier'],
   \ 'jsx': ['prettier_eslint', 'prettier'],
-  \ 'python': ['black'],
   \ 'elixir': ['mix_format'],
   \ }
+" \ 'python': ['black'],
 
 let g:ale_linters = {
   \ 'python': ['mypy', 'flake8'],

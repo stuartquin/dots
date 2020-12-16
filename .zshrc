@@ -31,7 +31,7 @@ DISABLE_AUTO_TITLE="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 
-plugins=(git pass docker docker-compose z zsh-autosuggestions)
+# plugins=(git pass docker docker-compose z zsh-autosuggestions)
 DISABLE_AUTO_UPDATE="true"
 source $ZSH/oh-my-zsh.sh
 unsetopt correct_all
